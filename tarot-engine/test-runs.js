@@ -1,21 +1,15 @@
-/** Prueba del motor para las tres tiradas. */
-const { extraerRiderWaite } = require('./rider-waite');
-const { crearTirada } = require('./spreads');
+/** Prueba de las reglas reales de los tres mazos. */
+const { DECKS, draw, validateReading } = require('./decks');
 
-const pruebas = [
-  ['Rider-Waite', 10, true, extraerRiderWaite],
-  ['Tarot Mítico', 10, false, () => crearTirada('Tarot Mítico')],
-  ['Tarot del Amor', 13, false, () => crearTirada('Tarot del Amor')]
-];
-
-for (const [mazo, cantidad, permiteInvertida, generar] of pruebas) {
-  const tirada = generar();
-  const cartas = tirada.cartas;
-  if (cartas.length !== cantidad) throw new Error(`${mazo}: cantidad incorrecta`);
-  if (new Set(cartas.map(c => c.carta)).size !== cantidad) throw new Error(`${mazo}: cartas repetidas`);
-  if (!permiteInvertida && cartas.some(c => c.orientacion === 'invertida')) throw new Error(`${mazo}: no admite invertidas`);
-  if (cartas.some(c => !['derecha', 'invertida'].includes(c.orientacion))) throw new Error(`${mazo}: orientación inválida`);
-  console.log(`✓ ${mazo}: ${cantidad} cartas, sin repetición, orientación válida`);
+for (const id of Object.keys(DECKS)) {
+  const deck = DECKS[id];
+  const reading = draw(id);
+  const validation = validateReading(reading);
+  if (!validation.ok) throw new Error(`${deck.name}: ${validation.error}`);
+  if (reading.cards.length !== deck.count) throw new Error(`${deck.name}: cantidad incorrecta`);
+  if (new Set(reading.cards.map(c => c.cardId)).size !== deck.count) throw new Error(`${deck.name}: cartas repetidas`);
+  if (!deck.reversed && reading.cards.some(c => c.orientation === 'invertida')) throw new Error(`${deck.name}: contiene invertidas`);
+  if (deck.reversed && reading.cards.some(c => !['derecha','invertida'].includes(c.orientation))) throw new Error(`${deck.name}: orientación inválida`);
+  console.log(`✓ ${deck.name}: ${deck.count} cartas, ${deck.spread}, sin repetición, reglas de orientación correctas`);
 }
-
-console.log('✓ Prueba de los tres motores completada.');
+console.log('✓ Motor de los tres mazos validado.');
