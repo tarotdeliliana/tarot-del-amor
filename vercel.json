@@ -1,1 +1,1 @@
-{"version":2,"rewrites":[{"source":"/api/:path*","destination":"https://wxkgfrxogmyycffwskpy.supabase.co/functions/v1/tarot-api/:path*"},{"source":"/","destination":"/tarot-4-paginas-final.html"}]}
+{"version":2,"rewrites":[{"source":"/api/:path*","destination":"https://wxkgfrxogmyycffwskpy.supabase.co/functions/v1/tarot-api/:path*"},{"source":"/","destination":"/tarot-4-paginas.html"}]}
